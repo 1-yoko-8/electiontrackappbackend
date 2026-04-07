@@ -27,14 +27,14 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Field Worker Tracking API", lifespan=lifespan)
 
 origins = [
-    "http://localhost",  # development - app/web frontend
-    "http://localhost:3000",  # web portal app
-    "http://YOUR_PUBLIC_IP_OR_DOMAIN",  # public ip - app frontend
+    "http://localhost",
+    "http://localhost:3000",
+    "https://electiontrackapp.onrender.com", # app backend public ip
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
