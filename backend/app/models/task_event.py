@@ -8,7 +8,7 @@ class TaskEvent(SQLModel, table=True):
     username: str = Field(index=True)
     taskName: str
     timestamp: datetime = Field(
-        sa_column=Column(DateTime(timezone=True), nullable=False)
+        sa_column=Column(DateTime(timezone=False), nullable=False)
     )
     latitude: float
     longitude: float

@@ -1,15 +1,11 @@
-from pydantic import BaseModel, field_validator
-from datetime import datetime
+@field_validator("timestamp")
+def convert_to_ist_naive(cls, v):
+    if v.tzinfo is None:
+        raise ValueError("Timestamp must be timezone-aware")
 
-class LocationPingRequest(BaseModel):
-    userId: str
-    timestamp: datetime
-    latitude: float
-    longitude: float
-    currentTask: str
+    # Convert to IST first (safety)
+    from zoneinfo import ZoneInfo
+    v = v.astimezone(ZoneInfo("Asia/Kolkata"))
 
-    @field_validator("timestamp")
-    def ensure_timezone(cls, v):
-        if v.tzinfo is None:
-            raise ValueError("Timestamp must be timezone-aware")
-        return v
+    # Remove timezone info → store as plain IST
+    return v.replace(tzinfo=None)
