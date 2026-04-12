@@ -8,6 +8,7 @@ from app.models.gps_ping import GPSPing
 from app.models.task_event import TaskEvent
 from app.models.pollingstation import PollingStation
 from app.models.DayConfig import DayConfig
+from app.models.report import Report
 from sqlmodel import SQLModel
 from app.db.session import engine
 
