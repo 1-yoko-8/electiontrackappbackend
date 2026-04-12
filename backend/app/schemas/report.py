@@ -8,7 +8,7 @@ class ReportCreate(BaseModel):
     username: str
     name: Optional[str] = None
     rank: Optional[str] = None
-    contact_number: Optional[str] = Field(default=None, min_length=10, max_length=15)
+    contact_number: Optional[str]
 
     polling_stations: int = Field(default=0, ge=0)
     polling_locations: int = Field(default=0, ge=0)

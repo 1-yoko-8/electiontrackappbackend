@@ -10,7 +10,7 @@ class Report(SQLModel, table=True):
     username: str = Field(index=True)  # required
     name: Optional[str] = None
     rank: Optional[str] = None
-    contact_number: Optional[str] = Field(default=None, min_length=10, max_length=15)
+    contact_number: Optional[str]
 
     # --- Assignment Info ---
     polling_stations: int = Field(default=0, ge=0)
