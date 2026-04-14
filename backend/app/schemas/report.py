@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional, Literal
-from datetime import datetime
+from datetime import datetime, date
 
 
 # ---------------- CREATE ----------------
@@ -8,7 +8,7 @@ class ReportCreate(BaseModel):
     username: str
     name: Optional[str] = None
     rank: Optional[str] = None
-    contact_number: Optional[str]
+    contact_number: Optional[str] = None
 
     polling_stations: int = Field(default=0, ge=0)
     polling_locations: int = Field(default=0, ge=0)
@@ -33,6 +33,9 @@ class ReportResponse(BaseModel):
     name: Optional[str]
     rank: Optional[str]
     contact_number: Optional[str]
+
+    # 🔥 NEW FIELD
+    report_date: date
 
     polling_stations: int
     polling_locations: int

@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
+from datetime import date
 
 from app.db.session import get_session
 from app.models.task_event import TaskEvent
@@ -28,19 +29,27 @@ def create_task_event(
     )
     session.add(event)
 
-    # ---------------- FETCH OR CREATE REPORT ----------------
+    # ---------------- FETCH OR CREATE DAILY REPORT ----------------
+    today = data.timestamp.date()
+
     report = session.exec(
-        select(Report).where(Report.username == data.username)
+        select(Report).where(
+            Report.username == data.username,
+            Report.report_date == today
+        )
     ).first()
 
     if not report:
-        report = Report(username=data.username)
+        report = Report(
+            username=data.username,
+            report_date=today
+        )
         session.add(report)
         session.flush()
 
     task = data.taskName.upper()
 
-    # ---------------- UPDATE REPORT USING EVENT TIMESTAMP ----------------
+    # ---------------- UPDATE REPORT ----------------
 
     # ---- COLLECTED ----
     if task == "COLLECTED_AND_STARTED":
