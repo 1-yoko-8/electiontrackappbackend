@@ -10,52 +10,66 @@ from app.schemas.tasks import TaskEventRequest
 router = APIRouter()
 
 
-@router.post("/task-event")
-def create_task_event(
-    data: TaskEventRequest,
-    user_id: int = Depends(get_current_user),
-    session: Session = Depends(get_session)
-):
+@router.get("/export-tasks")
+def export_tasks(session: Session = Depends(get_session), admin = Depends(get_current_admin)):
 
-    # ---------------- SAVE TASK EVENT ----------------
-    event = TaskEvent(
-        username=data.username,
-        taskName=data.taskName,
-        timestamp=data.timestamp,
-        latitude=data.latitude,
-        longitude=data.longitude,
-        location=data.location
+    # ---------------- DB FILTER ----------------
+    stmt = select(Report)
+    reports = session.exec(stmt).all()
+
+    if not reports:
+        raise HTTPException(
+            status_code=404,
+            detail="No reports found"
+        )
+
+    # ---------------- SORT ----------------
+    reports.sort(key=lambda r: r.username)
+
+    # ---------------- CREATE EXCEL ----------------
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Reports"
+
+    ws.append([
+        "Mobile Party",
+        "Name",
+        "Rank",
+        "Contact No.",
+        "Collected",
+        "Collected Time",
+        "Handed Over",
+        "Handed Over Time",
+    ])
+
+    for r in reports:
+        ws.append([
+            r.username,
+            r.name or "N/A",
+            r.rank or "N/A",
+            r.contact_number or "N/A",
+
+            r.ballot_box_collected_status,
+            r.collected_timestamp.strftime("%Y-%m-%d %H:%M:%S")
+            if r.collected_timestamp else "N/A",
+
+            r.ballot_box_handed_over_status,
+            r.handed_over_timestamp.strftime("%Y-%m-%d %H:%M:%S")
+            if r.handed_over_timestamp else "N/A",
+        ])
+
+    # ---------------- STREAM FILE ----------------
+    stream = BytesIO()
+    wb.save(stream)
+    stream.seek(0)
+
+    from datetime import datetime
+    filename = f"reports_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.xlsx"
+
+    return StreamingResponse(
+        stream,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={
+            "Content-Disposition": f"attachment; filename={filename}"
+        }
     )
-    session.add(event)
-
-    # ---------------- FETCH OR CREATE REPORT ----------------
-    report = session.exec(
-        select(Report).where(Report.username == data.username)
-    ).first()
-
-    if not report:
-        report = Report(username=data.username)
-        session.add(report)
-        session.flush()
-
-    task = data.taskName.upper()
-
-    # ---------------- UPDATE REPORT USING EVENT TIMESTAMP ----------------
-
-    # ---- COLLECTED ----
-    if task == "COLLECTED_AND_STARTED":
-        if report.ballot_box_collected_status != "Completed":
-            report.ballot_box_collected_status = "Completed"
-            report.collected_timestamp = data.timestamp
-
-    # ---- HANDED OVER ----
-    elif task == "REACHED_AND_HANDED_OVER":
-        if report.ballot_box_handed_over_status != "Completed":
-            report.ballot_box_handed_over_status = "Completed"
-            report.handed_over_timestamp = data.timestamp
-
-    # ---------------- SAVE ----------------
-    session.add(report)
-    session.commit()
-
-    return {"status": "ok"}
