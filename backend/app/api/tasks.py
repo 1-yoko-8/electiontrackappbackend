@@ -7,11 +7,12 @@ from app.models.report import Report
 from app.core.deps import get_current_user
 from app.schemas.tasks import TaskEventRequest
 
+
 router = APIRouter()
 
 
 @router.get("/export-tasks")
-def export_tasks(session: Session = Depends(get_session), admin = Depends(get_current_admin)):
+def export_tasks(session: Session = Depends(get_session), admin = Depends(get_current_user)):
 
     # ---------------- DB FILTER ----------------
     stmt = select(Report)
