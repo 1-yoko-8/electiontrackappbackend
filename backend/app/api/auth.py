@@ -15,7 +15,8 @@ router = APIRouter()
 @router.post("/login", response_model=TokenResponse)
 def login(data: LoginRequest, session: Session = Depends(get_session)):
 
-    statement = select(User).where(User.username == data.username)
+    normalized_username = data.username.strip().lower()
+    statement = select(User).where(User.username == normalized_username)
     user = session.exec(statement).first()
 
     if not user or not verify_password(data.password, user.password_hash):  # writing them in single block to prevent username enumeration
