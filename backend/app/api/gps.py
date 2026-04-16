@@ -16,7 +16,7 @@ def location_ping(
     session: Session = Depends(get_session)
 ):
     ping = GPSPing(
-        userId=data.user_id,
+        userId=data.userId,
         timestamp=data.timestamp,
         latitude=data.latitude,
         longitude=data.longitude,
