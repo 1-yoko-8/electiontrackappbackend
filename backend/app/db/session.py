@@ -5,11 +5,8 @@ DATABASE_URL = settings.DATABASE_URL
 
 engine = create_engine(
     DATABASE_URL,
-    connect_args={"sslmode": "require"},
-    pool_size=20,        # connections kept ready
-    max_overflow=40,     # extra burst capacity
-    pool_timeout=30,
-    pool_recycle=1800,
+    pool_size=5,
+    max_overflow=5,
 )
 
 def get_session():
