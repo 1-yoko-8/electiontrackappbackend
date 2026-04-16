@@ -16,7 +16,7 @@ def location_ping(
     session: Session = Depends(get_session)
 ):
     ping = GPSPing(
-        userId=str(user_id),   # 🔥 always trust backend user
+        userId=data.user_id,
         timestamp=data.timestamp,
         latitude=data.latitude,
         longitude=data.longitude,
