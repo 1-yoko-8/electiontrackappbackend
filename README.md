@@ -109,6 +109,8 @@ pip install -r backend/requirements.txt
 cp .env.example .env
 # then edit .env with your own SECRET_KEY and DATABASE_URL
 
+```
+
 ## API endpoints
 
 | Method | Endpoint              | Auth required | Description                                  |
