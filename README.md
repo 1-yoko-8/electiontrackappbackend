@@ -63,7 +63,7 @@ active election days).
 ## Project structure
 
 ```text
-.
+
 ├── backend/
 │   ├── app/
 │   │   ├── api/                       # Route handlers
@@ -87,6 +87,7 @@ active election days).
 │   └── requirements.txt
 ├── docker-compose.yml
 └── .env.example
+```
 
 ## Setup and installation
 
