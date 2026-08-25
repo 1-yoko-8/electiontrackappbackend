@@ -95,6 +95,7 @@ active election days).
 [Supabase](https://supabase.com) project).
 
 \```bash
+
 git clone <repo-url>
 cd electiontrackappbackend
 
