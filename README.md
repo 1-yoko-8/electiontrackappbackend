@@ -94,8 +94,7 @@ active election days).
 **Requirements:** Python 3.11+, a PostgreSQL database (e.g. a free
 [Supabase](https://supabase.com) project).
 
-\```bash
-
+```bash
 git clone <repo-url>
 cd electiontrackappbackend
 
@@ -109,43 +108,6 @@ pip install -r backend/requirements.txt
 # configure environment variables
 cp .env.example .env
 # then edit .env with your own SECRET_KEY and DATABASE_URL
-\```
-
-## Running the project
-
-### Option 1 — locally with Uvicorn
-
-\```bash
-cd backend
-uvicorn app.main:app --reload
-\```
-
-The API will be available at `http://localhost:8000`, with interactive docs
-at `http://localhost:8000/docs`.
-
-### Option 2 — with Docker
-
-\```bash
-docker-compose up --build
-\```
-
-This builds the API image, runs it behind Gunicorn/Uvicorn workers, and puts
-an Nginx reverse proxy in front of it on `http://localhost:80`.
-
-## Example usage
-
-Log in and use the returned access token to call an authenticated endpoint:
-
-\```bash
-curl -X POST http://localhost:8000/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username": "jdoe", "password": "yourpassword"}'
-
-# -> { "accessToken": "...", "refreshToken": "...", "token_type": "bearer" }
-
-curl http://localhost:8000/profile \
-  -H "Authorization: Bearer <accessToken>"
-\```
 
 ## API endpoints
 
