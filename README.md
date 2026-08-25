@@ -108,6 +108,43 @@ pip install -r backend/requirements.txt
 # configure environment variables
 cp .env.example .env
 # then edit .env with your own SECRET_KEY and DATABASE_URL
+## Running the server
+
+**Locally (uvicorn):**
+
+```bash
+cd backend
+uvicorn app.main:app --reload
+```
+
+The API is now available at `http://localhost:8000`, with interactive docs at
+`http://localhost:8000/docs`. Tables are created automatically on startup.
+
+**With Docker (production-style, Gunicorn behind Nginx):**
+
+```bash
+docker-compose up --build
+```
+
+This builds the API image, runs it with Gunicorn/Uvicorn workers, and puts
+Nginx in front of it on port `80`. Requires a `.env` file in the project root
+(see above).
+
+## Example usage
+
+```bash
+curl -X POST http://localhost:8000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username": "testuser", "password": "password123"}'
+```
+
+This returns an access token and a refresh token. Send the access token as a
+Bearer token on subsequent requests, e.g.:
+
+```bash
+curl http://localhost:8000/profile \
+  -H "Authorization: Bearer <accessToken>"
+```
 
 ```
 
